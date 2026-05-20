@@ -1,5 +1,5 @@
 ---
-name: jira
+name: jira-mcp
 description: Use when the user asks Codex to search, inspect, summarize, or update Atlassian Jira issues through the Jira MCP server.
 ---
 

@@ -1,4 +1,4 @@
-# Jira Codex Plugin
+# Jira MCP Codex Plugin
 
 Connect Codex to Atlassian Jira through the Atlassian remote MCP server.
 

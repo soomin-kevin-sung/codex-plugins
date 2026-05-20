@@ -1,12 +1,12 @@
 {
-  "name": "jira",
+  "name": "jira-mcp",
   "version": "0.1.0",
   "description": "Atlassian Jira MCP integration for Codex.",
   "author": {
     "name": "Soomin Kevin Sung",
     "url": "https://github.com/soomin-kevin-sung"
   },
-  "homepage": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/jira",
+  "homepage": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/jira-mcp",
   "repository": "https://github.com/soomin-kevin-sung/codex-plugins",
   "license": "MIT",
   "keywords": [
@@ -18,7 +18,7 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Jira",
+    "displayName": "Jira MCP",
     "shortDescription": "Search and manage Jira issues from Codex",
     "longDescription": "Connects Codex to Atlassian Jira through the official Atlassian remote MCP server. Each user authenticates with their own Atlassian account, and Jira permissions are inherited from that account.",
     "developerName": "Soomin Kevin Sung",
@@ -27,7 +27,7 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/jira",
+    "websiteURL": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/jira-mcp",
     "privacyPolicyURL": "https://www.atlassian.com/legal/privacy-policy",
     "termsOfServiceURL": "https://www.atlassian.com/legal/cloud-terms-of-service",
     "defaultPrompt": [

@@ -9,7 +9,7 @@ Personal Codex plugin marketplace for reusable MCP integrations and workflow ski
   plugins/
     marketplace.json
 plugins/
-  jira/
+  jira-mcp/
     .codex-plugin/
       plugin.json
     .mcp.json

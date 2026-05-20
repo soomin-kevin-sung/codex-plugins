@@ -10,7 +10,7 @@ if (-not (Test-Path $marketplacePath)) {
 $marketplace = Get-Content -Raw -Path $marketplacePath | ConvertFrom-Json
 $expectedPlugins = @(
     @{
-        Name = "jira"
+        Name = "jira-mcp"
         ServerName = "jira"
         ServerCheck = {
             param($server)

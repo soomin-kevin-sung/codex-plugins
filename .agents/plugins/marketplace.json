@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "jira",
+      "name": "jira-mcp",
       "source": {
         "source": "local",
-        "path": "./plugins/jira"
+        "path": "./plugins/jira-mcp"
       },
       "policy": {
         "installation": "AVAILABLE",
