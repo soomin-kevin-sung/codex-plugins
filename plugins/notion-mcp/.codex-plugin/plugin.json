@@ -1,0 +1,39 @@
+{
+  "name": "notion-mcp",
+  "version": "0.1.0",
+  "description": "Notion MCP integration for Codex.",
+  "author": {
+    "name": "Soomin Kevin Sung",
+    "url": "https://github.com/soomin-kevin-sung"
+  },
+  "homepage": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/notion-mcp",
+  "repository": "https://github.com/soomin-kevin-sung/codex-plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "mcp",
+    "notion"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Notion MCP",
+    "shortDescription": "Search and manage Notion workspace content from Codex",
+    "longDescription": "Connects Codex to the hosted Notion MCP server. Each user authenticates with their own Notion account through OAuth, and workspace permissions are inherited from that account.",
+    "developerName": "Soomin Kevin Sung",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/notion-mcp",
+    "privacyPolicyURL": "https://www.notion.com/help/security-and-privacy",
+    "termsOfServiceURL": "https://www.notion.com/terms-and-privacy",
+    "defaultPrompt": [
+      "Find a Notion page and summarize it.",
+      "Search Notion workspace content.",
+      "Draft a Notion page update."
+    ],
+    "brandColor": "#000000"
+  }
+}

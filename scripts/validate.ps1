@@ -2,42 +2,85 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $marketplacePath = Join-Path $root ".agents\plugins\marketplace.json"
-$pluginPath = Join-Path $root "plugins\jira"
-$pluginManifestPath = Join-Path $pluginPath ".codex-plugin\plugin.json"
-$mcpPath = Join-Path $pluginPath ".mcp.json"
 
-foreach ($path in @($marketplacePath, $pluginManifestPath, $mcpPath)) {
-    if (-not (Test-Path $path)) {
-        throw "Missing required file: $path"
-    }
+if (-not (Test-Path $marketplacePath)) {
+    throw "Missing required file: $marketplacePath"
 }
 
 $marketplace = Get-Content -Raw -Path $marketplacePath | ConvertFrom-Json
-$plugin = Get-Content -Raw -Path $pluginManifestPath | ConvertFrom-Json
-$mcp = Get-Content -Raw -Path $mcpPath | ConvertFrom-Json
+$expectedPlugins = @(
+    @{
+        Name = "jira"
+        ServerName = "jira"
+        ServerCheck = {
+            param($server)
 
-if ($plugin.name -ne "jira") {
-    throw "Unexpected plugin name: $($plugin.name)"
-}
+            if ($server.command -ne "npx") {
+                throw "Jira MCP command must be npx"
+            }
 
-if ($plugin.mcpServers -ne "./.mcp.json") {
-    throw "plugin.json must point mcpServers to ./.mcp.json"
-}
+            if (-not ($server.args -contains "https://mcp.atlassian.com/v1/mcp/authv2")) {
+                throw "Jira MCP args must include the Atlassian remote MCP URL"
+            }
+        }
+    },
+    @{
+        Name = "notion-mcp"
+        ServerName = "notion"
+        ServerCheck = {
+            param($server)
 
-if (-not $mcp.mcpServers.jira) {
-    throw ".mcp.json must define mcpServers.jira"
-}
+            if ($server.url -ne "https://mcp.notion.com/mcp") {
+                throw "Notion MCP URL must be https://mcp.notion.com/mcp"
+            }
+        }
+    }
+)
 
-if ($mcp.mcpServers.jira.command -ne "npx") {
-    throw "Jira MCP command must be npx"
-}
+foreach ($expected in $expectedPlugins) {
+    $name = $expected.Name
+    $pluginPath = Join-Path $root "plugins\$name"
+    $pluginManifestPath = Join-Path $pluginPath ".codex-plugin\plugin.json"
+    $mcpPath = Join-Path $pluginPath ".mcp.json"
 
-if (-not ($mcp.mcpServers.jira.args -contains "https://mcp.atlassian.com/v1/mcp/authv2")) {
-    throw "Jira MCP args must include the Atlassian remote MCP URL"
-}
+    foreach ($path in @($pluginManifestPath, $mcpPath)) {
+        if (-not (Test-Path $path)) {
+            throw "Missing required file: $path"
+        }
+    }
 
-if (-not ($marketplace.plugins | Where-Object { $_.name -eq "jira" })) {
-    throw "marketplace.json must register the jira plugin"
+    $plugin = Get-Content -Raw -Path $pluginManifestPath | ConvertFrom-Json
+    $mcp = Get-Content -Raw -Path $mcpPath | ConvertFrom-Json
+
+    if ($plugin.name -ne $name) {
+        throw "Unexpected plugin name in ${pluginManifestPath}: $($plugin.name)"
+    }
+
+    if ($plugin.mcpServers -ne "./.mcp.json") {
+        throw "$name plugin.json must point mcpServers to ./.mcp.json"
+    }
+
+    $serverName = $expected.ServerName
+    $server = $mcp.mcpServers.$serverName
+
+    if (-not $server) {
+        throw "$mcpPath must define mcpServers.$serverName"
+    }
+
+    & $expected.ServerCheck $server
+
+    $marketplaceEntry = $marketplace.plugins | Where-Object {
+        $_.name -eq $name -and
+        $_.source.source -eq "local" -and
+        $_.source.path -eq "./plugins/$name" -and
+        $_.policy.installation -eq "AVAILABLE" -and
+        $_.policy.authentication -eq "ON_INSTALL" -and
+        $_.category -eq "Productivity"
+    }
+
+    if (-not $marketplaceEntry) {
+        throw "marketplace.json must register the $name plugin with the expected policy and path"
+    }
 }
 
 Write-Host "Validation passed."
