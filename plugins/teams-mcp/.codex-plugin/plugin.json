@@ -1,0 +1,40 @@
+{
+  "name": "teams-mcp",
+  "version": "0.1.0",
+  "description": "Microsoft Teams CLI MCP integration for Codex.",
+  "author": {
+    "name": "Soomin Kevin Sung",
+    "url": "https://github.com/soomin-kevin-sung"
+  },
+  "homepage": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/teams-mcp",
+  "repository": "https://github.com/soomin-kevin-sung/codex-plugins",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "mcp",
+    "teams",
+    "microsoft-teams"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Teams MCP",
+    "shortDescription": "Read and send Microsoft Teams messages from Codex",
+    "longDescription": "Connects Codex to Microsoft Teams through the unofficial teams-cli project. The plugin installs the latest teams-cli Windows x86_64 release on demand, exposes safe MCP tools for search, read, dry-run, send, channel posts, aliases, and cache management, and requires confirmation ids before write operations.",
+    "developerName": "Soomin Kevin Sung",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/soomin-kevin-sung/codex-plugins/tree/main/plugins/teams-mcp",
+    "privacyPolicyURL": "https://privacy.microsoft.com/privacystatement",
+    "termsOfServiceURL": "https://www.microsoft.com/servicesagreement",
+    "defaultPrompt": [
+      "Search Teams chats for a person or channel.",
+      "Read recent Teams messages from a resolved chat.",
+      "Dry-run and then send a Teams message after confirmation."
+    ],
+    "brandColor": "#6264A7"
+  }
+}

@@ -21,6 +21,14 @@ plugins/
     .mcp.json
     skills/
     scripts/
+  teams-mcp/
+    .codex-plugin/
+      plugin.json
+    .mcp.json
+    mcp/
+    skills/
+    scripts/
+    tests/
 ```
 
 Add future plugins under `plugins/<plugin-name>` and register them in `.agents/plugins/marketplace.json`.
@@ -40,11 +48,12 @@ Cloning is only needed if you want to edit or develop plugins locally.
 ## Requirements
 
 - Codex with plugin support
-- Node.js 18 or newer, required by the Jira plugin
+- Node.js 18 or newer, required by the Jira and Teams plugins
 - `npx` available on `PATH`, required by the Jira plugin
 - An account with access to the service you want to use
 
 Jira uses Atlassian OAuth through `mcp-remote`. Notion uses the hosted Notion MCP server with OAuth. Credentials are not stored in this repository and should not be committed.
+Teams uses the local `teams-mcp` server and the latest Windows x86_64 release of `teams-cli`, which is installed on demand under `%LOCALAPPDATA%\Codex\teams-cli` and verified with the GitHub release asset SHA-256 digest. It does not update automatically; run the Teams update tool only when you want to reinstall the latest release. The Teams integration uses unofficial Teams web APIs and may be affected by tenant policy.
 
 ## Local validation
 

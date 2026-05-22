@@ -13,7 +13,7 @@ $expectedPlugins = @(
         Name = "jira-mcp"
         ServerName = "jira"
         ServerCheck = {
-            param($server)
+            param($server, $pluginPath)
 
             if ($server.command -ne "npx") {
                 throw "Jira MCP command must be npx"
@@ -28,10 +28,37 @@ $expectedPlugins = @(
         Name = "notion-mcp"
         ServerName = "notion"
         ServerCheck = {
-            param($server)
+            param($server, $pluginPath)
 
             if ($server.url -ne "https://mcp.notion.com/mcp") {
                 throw "Notion MCP URL must be https://mcp.notion.com/mcp"
+            }
+        }
+    },
+    @{
+        Name = "teams-mcp"
+        ServerName = "teams"
+        ServerCheck = {
+            param($server, $pluginPath)
+
+            if ($server.command -ne "node") {
+                throw "Teams MCP command must be node"
+            }
+
+            if (-not ($server.args -contains "./mcp/server.js")) {
+                throw "Teams MCP args must include ./mcp/server.js"
+            }
+
+            foreach ($relativePath in @(
+                "mcp\server.js",
+                "scripts\install-teams-cli.ps1",
+                "scripts\teams.ps1",
+                "tests\server.test.js"
+            )) {
+                $path = Join-Path $pluginPath $relativePath
+                if (-not (Test-Path -LiteralPath $path)) {
+                    throw "Missing Teams MCP support file: $path"
+                }
             }
         }
     }
@@ -60,6 +87,21 @@ foreach ($expected in $expectedPlugins) {
         throw "$name plugin.json must point mcpServers to ./.mcp.json"
     }
 
+    if (-not $plugin.skills) {
+        throw "$name plugin.json must define a skills path"
+    }
+
+    $skillsRelativePath = ([string]$plugin.skills).Replace("/", "\")
+    $skillsPath = Join-Path $pluginPath $skillsRelativePath
+    if (-not (Test-Path -LiteralPath $skillsPath -PathType Container)) {
+        throw "$name plugin skills path does not exist: $skillsPath"
+    }
+
+    $skillFiles = Get-ChildItem -LiteralPath $skillsPath -Recurse -File -Filter "SKILL.md"
+    if (-not $skillFiles) {
+        throw "$name plugin skills path must contain at least one SKILL.md"
+    }
+
     $serverName = $expected.ServerName
     $server = $mcp.mcpServers.$serverName
 
@@ -67,7 +109,7 @@ foreach ($expected in $expectedPlugins) {
         throw "$mcpPath must define mcpServers.$serverName"
     }
 
-    & $expected.ServerCheck $server
+    & $expected.ServerCheck $server $pluginPath
 
     $marketplaceEntry = $marketplace.plugins | Where-Object {
         $_.name -eq $name -and
@@ -81,6 +123,15 @@ foreach ($expected in $expectedPlugins) {
     if (-not $marketplaceEntry) {
         throw "marketplace.json must register the $name plugin with the expected policy and path"
     }
+}
+
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    throw "Node.js is required to run Teams MCP tests"
+}
+
+& node --test (Join-Path $root "plugins\teams-mcp\tests\server.test.js")
+if ($LASTEXITCODE -ne 0) {
+    throw "Teams MCP tests failed"
 }
 
 Write-Host "Validation passed."

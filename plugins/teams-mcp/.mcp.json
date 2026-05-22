@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "teams": {
+      "command": "node",
+      "args": [
+        "./mcp/server.js"
+      ]
+    }
+  }
+}
