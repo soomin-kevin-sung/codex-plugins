@@ -10,6 +10,8 @@ asset `sha256` digest, and caches the binary under
 Use `teams_cli_update` only when you explicitly want to reinstall the latest
 release. Set `TEAMS_CLI_HOME` to use a different cache directory, or set
 `TEAMS_MCP_TEAMS_BIN` to point at a specific `teams.exe` during development.
+The MCP manifest sets `cwd` to the plugin root so `./mcp/server.js` resolves
+correctly regardless of the Codex session's current working directory.
 
 ## MCP tools
 

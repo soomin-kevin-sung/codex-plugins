@@ -49,6 +49,10 @@ $expectedPlugins = @(
                 throw "Teams MCP args must include ./mcp/server.js"
             }
 
+            if ($server.cwd -ne ".") {
+                throw "Teams MCP cwd must be . so relative args resolve from the plugin root"
+            }
+
             foreach ($relativePath in @(
                 "mcp\server.js",
                 "scripts\install-teams-cli.ps1",

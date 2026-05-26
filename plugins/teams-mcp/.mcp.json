@@ -2,6 +2,7 @@
   "mcpServers": {
     "teams": {
       "command": "node",
+      "cwd": ".",
       "args": [
         "./mcp/server.js"
       ]

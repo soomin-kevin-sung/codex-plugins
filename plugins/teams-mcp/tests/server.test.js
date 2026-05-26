@@ -386,6 +386,67 @@ test("stdio MCP server responds over newline-delimited JSON transport", async ()
   }
 });
 
+test("MCP config declares plugin-root cwd for relative entrypoint", async () => {
+  const pluginRoot = path.join(__dirname, "..");
+  const mcpConfigPath = path.join(pluginRoot, ".mcp.json");
+  const mcpConfig = JSON.parse(await fsp.readFile(mcpConfigPath, "utf8"));
+  const serverConfig = mcpConfig.mcpServers.teams;
+
+  assert.equal(serverConfig.command, "node");
+  assert.equal(serverConfig.cwd, ".");
+
+  const child = spawn(serverConfig.command, serverConfig.args, {
+    cwd: path.resolve(pluginRoot, serverConfig.cwd),
+    stdio: ["pipe", "pipe", "pipe"],
+    windowsHide: true
+  });
+
+  let buffer = Buffer.alloc(0);
+  let stderr = "";
+
+  const done = new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out waiting for MCP config startup")), 5000);
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      reject(new Error(`MCP config server exited before initialize response: ${code}; ${stderr}`));
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString("utf8");
+    });
+    child.stdout.on("data", (chunk) => {
+      try {
+        buffer = Buffer.concat([buffer, chunk]);
+        const decoded = server.decodeMcpMessages(buffer.toString("utf8"));
+        buffer = Buffer.from(decoded.remaining, "utf8");
+        if (decoded.messages.length > 0) {
+          clearTimeout(timer);
+          resolve(decoded.messages[0]);
+        }
+      } catch (error) {
+        clearTimeout(timer);
+        reject(error);
+      }
+    });
+  });
+
+  try {
+    child.stdin.write(server.encodeMcpMessage({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: "2025-06-18"
+      }
+    }));
+
+    const response = await done;
+    assert.equal(response.result.serverInfo.name, "teams-mcp");
+    assert.equal(response.result.protocolVersion, "2025-06-18");
+  } finally {
+    child.kill();
+  }
+});
+
 test("executeTool returns MCP tool errors for invalid arguments", async () => {
   const response = await server.executeTool("teams_send", {
     target: "user@example.com",
