@@ -11,7 +11,7 @@ const crypto = require("node:crypto");
 const { spawn } = require("node:child_process");
 const { StringDecoder } = require("node:string_decoder");
 
-const SERVER_VERSION = "0.1.0";
+const SERVER_VERSION = "0.1.1";
 const SUPPORTED_PROTOCOL_VERSIONS = [
   "2025-11-25",
   "2025-06-18",

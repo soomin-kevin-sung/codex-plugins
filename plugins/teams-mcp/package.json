@@ -1,6 +1,6 @@
 {
   "name": "teams-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Codex MCP server wrapper for teams-cli.",
   "scripts": {
