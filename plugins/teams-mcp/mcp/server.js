@@ -78,7 +78,7 @@ const TOOL_DEFINITIONS = [
   },
   {
     name: "teams_whoami",
-    description: "Show cached signed-in Teams identity and token expiry information.",
+    description: "Check Teams login/auth status by showing cached signed-in identity and token expiry information.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
